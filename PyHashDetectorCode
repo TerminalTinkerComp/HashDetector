@@ -1,0 +1,51 @@
+#Import regular expression module for pattern matching.
+import re
+
+# Prepare and list possible hashes
+def hash_types_list(hashed_string):
+    # Prepare user input to be processed by algorithm
+    prepare_input = ''.join(char for char in hashed_string.lower() if char in '0123456789abcdef')
+
+    hash_types_sorted = sorted([
+        ('MD5 (or MD2, NTLM)', r'^([a-f0-9]{32})$'),  # 32 hex digits
+        ('SHA1', r'^([a-f0-9]{40})$'),  # 40 hex digits
+        ('SHA3-224 (or SHA224)', r'^([a-fA-F0-9]{56})$'), #  56 hex digits
+        ('SHA256 (or Shake-128, MD4, NTLM, SHA2)', r'^(?:[a-fA-F0-9]{64})$'),  # 64 hex digits
+        ('SHA384', r'^([a-f0-9]{96})$'),  # 96 hex digits
+        ('SHA512 (or Shake-256)', r'^([a-f0-9]{128})$'),  # 128 hex digits
+        ('SHA512/224', r'^([a-fA-F0-9]{112})$'), # 112 hex digits
+        ('MD6', r'^(?:[a-fA-F0-9]+)$'),  # MD6: variable length
+        ('CRC-16', r'^([0-9a-f]{4})$'), # CRC-16: 4 or 8 hex digits
+        ('CRC-32 or CRC-16', r'^([0-9a-f]{8})$'), # CRC-32: 8 hex characters
+
+    ])
+    #Check for any matches
+    for hash_type, pattern in hash_types_sorted:
+        if re.match(pattern, prepare_input):
+            return hash_type
+
+    return "Not known"
+
+#Define main function
+def main():
+    # Counter
+    count = 0
+    while True:
+        #Increment
+        count += 1
+        print("-------------------------------------------------------------------------------------")
+        print("\n * Important: This tool is meant to narrow down the scope of possible hash values you provide\n")
+        print("Hash #",count)
+        hash_provided = input("Enter a your hash or type 'exit':")
+
+        # Check if the user wants to quit
+        if hash_provided.lower() == 'exit':
+            print("Exitting now. Goodbye!")
+            break
+        #Display hash type
+        what_the_hash = hash_types_list(hash_provided)
+        print("Detected hash type:", what_the_hash)
+
+# Call the main function
+main()
+
